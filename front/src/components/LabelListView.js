@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import LabelInputModal from './modals/LabelInputModal';
 import { getLabelListAction, resetDeletedLabelFlg, resetCreatedLabelFlg } from '../reducers/label';
 import { resetSelectedMemo, resetCreatedMemoFlg, getMemoCountAction } from '../reducers/memo';
+import LabelItem from './LabelItem';
 
 const Overlay = styled.div`
   display: flex;
@@ -20,7 +21,8 @@ const Overlay = styled.div`
     color: inherit;
   }
 `;
-const LabelItem = styled.div`
+
+const LabelItemStyle = styled.div`
   border-bottom: 1px solid #DFDFDF;
   padding: 16px;
   text-align: center;
@@ -43,8 +45,9 @@ const LabelItem = styled.div`
 `;
 
 const LabelListView = ({ history, location }) => {
+  const [isOpenModal, setModal] = useState(false);
   const { labelList, selectedLabel, deletedLabelFlg, createdLabelFlg } = useSelector(state => state.label);
-  const { memoCount, createdMemoFlg, selectedMemo } = useSelector(state => state.memo);
+  const { createdMemoFlg, selectedMemo } = useSelector(state => state.memo);
   const dispatch = useDispatch();
 
   // 초기 리스트 랜더링 (초기 1회만 실행)
@@ -81,8 +84,6 @@ const LabelListView = ({ history, location }) => {
     }
   }, [createdMemoFlg]);
 
-  const [isOpenModal, setModal] = useState(false);
-
   const onClickLabel = useCallback(() => {
     dispatch(resetSelectedMemo);
   }, [selectedLabel]);
@@ -97,33 +98,17 @@ const LabelListView = ({ history, location }) => {
         { isOpenModal ? 
             <LabelInputModal label={null} close={handleModal} /> 
           : null }
-        <NavLink to={`/all`}>
-          <LabelItem
-            style={ (selectedLabel !== null && selectedLabel._id)　=== 'all' ? 
-                    { color: '1890ff', backgroundColor: '#e6f7ff' } : null }
-            onClick={() => onClickLabel()} 
-            >
-            전체메모 ({memoCount})
-          </LabelItem>
-        </NavLink>
-        {labelList.map((v,i) => {
+        {labelList.map((v) => {
           return (
-            <NavLink key={i} to={`/${v._id}`}>
-              <LabelItem
-                className="label-item"
-                style={ (selectedLabel !== null && selectedLabel._id ) === v._id ?
-                        { color: '1890ff', backgroundColor: '#e6f7ff' } : null } 
-                onClick={() => onClickLabel()} 
-              >
-                {v.title} ({v.memos.length})
-              </LabelItem>
+            <NavLink key={v._id} to={`/${v._id}`}>
+              <LabelItem localSelectedLabel={v} onClickLabel={onClickLabel} />
             </NavLink>
           )})
         }
       </div>
-      <LabelItem className="add-btn" onClick={handleModal}>
+      <LabelItemStyle className="add-btn" onClick={handleModal}>
         라벨추가
-      </LabelItem>
+      </LabelItemStyle>
     </Overlay>
   );
 };

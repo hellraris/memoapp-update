@@ -28,7 +28,8 @@ import {
 
 import { 
   REMOVE_ALL_LABEL_MEMOS_REQUEST,
-  RESET_SELECTED_LABEL
+  RESET_SELECTED_LABEL,
+  SELECT_MEMO_LIST_LABEL
 } from '../reducers/label'
 
 
@@ -42,6 +43,9 @@ function* getMemoList() {
     yield put({
       type: GET_MEMO_LIST_SUCCESS,
       data: result.data
+    });
+    yield put({
+      type: SELECT_MEMO_LIST_LABEL
     });
   } catch (error) {
     yield put({

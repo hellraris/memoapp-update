@@ -28,11 +28,10 @@ const MenuBar = styled.div`
 `;
 
 const AppLayout = ({ children }) => {
+  const [isOpenModal, setModal] = useState(false);
   const { memoErrorMessage } = useSelector(state => state.memo);
   const { labelErrorMessage } = useSelector(state => state.label);
   const dispatch = useDispatch();
-
-  const [isOpenModal, setModal] = useState(false);
 
   const handleModal = useCallback(() => {
     setModal(!isOpenModal);
@@ -60,7 +59,7 @@ const AppLayout = ({ children }) => {
       <MenuBar>
         <button onClick={handleModal}>메모작성</button>
       </MenuBar>
-      {children}
+      { children }
     </div>
   );
 };

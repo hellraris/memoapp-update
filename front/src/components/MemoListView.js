@@ -1,60 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import Moment from 'moment';
-import { NavLink } from 'react-router-dom';
  
-import { getMemoListAction, removeMemosAction, resetDeletedMemoFlg } from '../reducers/memo';
+import { getMemoListAction, getMemoCountAction, removeMemosAction, resetDeletedMemoFlg } from '../reducers/memo';
 import { getLabelListAction, removeLabelMemosAction, removeLabelAction, 
-         getLabelAction, resetSelectedLabel, resetUpdatedLabelFlg } from '../reducers/label';
+         getLabelAction, resetUpdatedLabelFlg } from '../reducers/label';
 
 import LabelSettingModal from './modals/LabelSettingModal';
 import LabelInputModal from './modals/LabelInputModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
+import  MemoItem from './MemoItem';
 
 const Overlay = styled.div`
   a {
     display: inline-block;
     text-decoration: none;
     color: inherit;
-  }
-`;
-
-const MemoItem = styled.div`
-  border-bottom: 1px solid #DFDFDF;
-  padding: 10px 0;
-  display: flex;
-  word-break: break-word;
-  &:hover{
-    color: #1890ff;
-  }
-  .memo-selection {
-    margin: auto;
-  }
-  .memo-content {
-    width: 92%;
-    .memo-content-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-    }
-    .memo-content-body {
-      width: 95%;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .memo-title{
-      width: 70%;
-      text-overflow:ellipsis;
-      overflow:hidden;
-      white-space:nowrap;
-    }
-    .memo-date{
-      width: 70px;
-      font-size: 12px;
-      margin-left: 3%;
-    }
   }
 `;
 
@@ -99,15 +60,15 @@ const MemoMenu = styled.div`
 `;
 
 const MemoListView = ({ match, history }) => {
-  const dispatch = useDispatch();
-  const { labelList, selectedLabel, updatedLabelFlg } = useSelector(state => state.label);
-  const { memoList, selectedMemo, deletedMemoFlg } = useSelector(state => state.memo);
   const [checkedItems, setCheckedItems] = useState([]);
   const [isOpenLabelSettingModal, setLabelSettingModal] = useState(false);
   const [isOpenLabelInputModal, setLabelInputModal] = useState(false);
   const [isLabelMemoList, setLabelMemoMode] = useState(false);
   const [isOpenConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({});
+  const dispatch = useDispatch();
+  const { labelList, selectedLabel, updatedLabelFlg } = useSelector(state => state.label);
+  const { memoList, deletedMemoFlg } = useSelector(state => state.memo);
 
    // 메모리스트뷰 초기화 
   useEffect(() => {
@@ -119,7 +80,6 @@ const MemoListView = ({ match, history }) => {
       dispatch(getLabelAction(match.params.label));
       setLabelMemoMode(true);
     }
-    dispatch(resetSelectedLabel);
     setCheckedItems([]);
   }, [match.params.label]);
 
@@ -140,7 +100,11 @@ const MemoListView = ({ match, history }) => {
   useEffect(() => {
     if (deletedMemoFlg) {
       history.push(`/${match.params.label}`);
-      dispatch(getMemoListAction);
+      if (match.params.label === 'all') {
+        dispatch(getMemoListAction);
+      } else {
+        dispatch(getMemoCountAction);
+      }
       dispatch(resetDeletedMemoFlg);
     }
   }, [deletedMemoFlg]);
@@ -244,35 +208,16 @@ const MemoListView = ({ match, history }) => {
         </MemoMenu>
       }
       { memoList.length !== 0 
-        ? memoList.map((v,i) => {
+        ? memoList.map((v) => {
           return (
             <MemoItem 
-              style={ v._id === (selectedMemo !== null && selectedMemo._id) ?
-                 { color: '1890ff', backgroundColor: '#e6f7ff' } : null } 
-              key={i}
-            >
-              <div className={"memo-selection"}>
-                <input 
-                type= "checkbox" 
-                name={v._id} 
-                checked={checkedItems.indexOf(v._id) !== -1} 
-                onChange={(e) => onChangeChekedItems(e, v._id)} 
-              />
-              </div>
-              <NavLink 
-                className={"memo-content"}  
-                key={i} 
-                to={ isLabelMemoList ? `/${match.params.label}/${v._id}` : `/all/${v._id}`}
-              >
-                <div className={"memo-content-header"}>
-                  <div className={"memo-title"}>{v.title}</div>
-                  <div className={"memo-date"}>{Moment(v.updatedAt).format('YYYY-MM-DD')}</div>
-                </div>
-                <div className={"memo-content-body"}>
-                  {v.content}
-                </div>
-              </NavLink>
-            </MemoItem>
+              key={v._id} 
+              localSelectedMemo={v}
+              checkedItems={checkedItems}
+              isLabelMemoList={isLabelMemoList}
+              onChangeChekedItems={onChangeChekedItems} 
+              match={match}
+            />
           )
         }
       ) :

@@ -1,6 +1,12 @@
+const intialLabelList = [{
+  _id: 'all',
+  title: '전체메모',
+  memos: []
+}]
+
 export const intialState = {
-  labelList: [],
-  selectedLabel: null,
+  labelList: intialLabelList,
+  selectedLabel: {},
   labelErrorMessage:'',
   createdLabelFlg: false,
   updatedLabelFlg: false,
@@ -46,6 +52,8 @@ export const REMOVE_LABEL_MEMOS_FAILURE = 'REMOVE_LABEL_MEMOS_FAILURE';
 export const REMOVE_ALL_LABEL_MEMOS_REQUEST = 'REMOVE_ALL_LABEL_MEMOS_REQUEST';
 export const REMOVE_ALL_LABEL_MEMOS_SUCCESS = 'REMOVE_ALL_LABEL_MEMOS_SUCCESS';
 export const REMOVE_ALL_LABEL_MEMOS_FAILURE = 'REMOVE_ALL_LABEL_MEMOS_FAILURE';
+
+export const SELECT_MEMO_LIST_LABEL = 'SELECT_MEMO_LIST_LABEL';
 
 // 각종 초기화 액션
 export const RESET_LABEL_LIST = 'RESET_LABEL_LIST';
@@ -132,17 +140,19 @@ export const resetSelectedLabel = {
   type: RESET_SELECTED_LABEL
 };
 
+export const selectMemoListLabel = {
+  type: SELECT_MEMO_LIST_LABEL
+};
+
 const reducer = (state = intialState, action) => {
   switch (action.type) {
     case GET_LABEL_LIST_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case GET_LABEL_LIST_SUCCESS: {
       return {
         ...state,
-        labelList: action.data
+        labelList: [...intialLabelList, ...action.data]
       };
     }
     case GET_LABEL_LIST_FAILURE: {
@@ -152,9 +162,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case GET_LABEL_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case GET_LABEL_SUCCESS: {
       return {
@@ -172,9 +180,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case CREATE_LABEL_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case CREATE_LABEL_SUCCESS: {
       return {
@@ -190,9 +196,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case UPDATE_LABEL_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case UPDATE_LABEL_SUCCESS: {
       return {
@@ -207,9 +211,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case ADD_LABEL_MEMOS_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case ADD_LABEL_MEMOS_SUCCESS: {
       return {
@@ -224,9 +226,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case REMOVE_LABEL_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case REMOVE_LABEL_SUCCESS: {
       return {
@@ -241,9 +241,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case REMOVE_LABEL_MEMOS_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case REMOVE_LABEL_MEMOS_SUCCESS: {
       return {
@@ -258,9 +256,7 @@ const reducer = (state = intialState, action) => {
       };
     }
     case REMOVE_ALL_LABEL_MEMOS_REQUEST: {
-      return {
-        ...state
-      };
+      return state;
     }
     case REMOVE_ALL_LABEL_MEMOS_SUCCESS: {
       return {
@@ -277,13 +273,13 @@ const reducer = (state = intialState, action) => {
     case RESET_LABEL_LIST: {
       return {
         ...state,
-        labelList: []
+        labelList: [...intialLabelList]
       };
     }
     case RESET_SELECTED_LABEL: {
       return {
         ...state,
-        selectedLabel: { _id: 'all'}
+        selectedLabel: {}
       };
     }
     case RESET_LABEL_ERROR_MESSAGE: {
@@ -309,6 +305,16 @@ const reducer = (state = intialState, action) => {
         ...state,
         deletedLabelFlg: false
       };
+    }
+    case SELECT_MEMO_LIST_LABEL: {
+      return {
+        ...state,
+        selectedLabel: {
+          _id: 'all',
+          title: '전체메모',
+          memos: []
+        }
+      }
     }
     default: {
       return {
