@@ -32,6 +32,21 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
+/* GET /memos/search/:word */
+router.get('/search/:word', function(req, res, next) {
+  console.log(req.params.word);
+  Memo
+    .find({$or:[
+      {'title': new RegExp(req.params.word, "i")},
+      {'content': new RegExp(req.params.word, "i")}
+    ]})
+    .sort({ 'updatedAt' : -1 })
+    .exec(function (err, payload) {
+      if (err) return next(err);
+      res.json(payload);
+    });
+});
+
 /* PUT /memos/:id */
 router.put('/:id', function(req, res, next) {
   Memo
