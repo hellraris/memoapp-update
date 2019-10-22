@@ -43,6 +43,11 @@ export const REMOVE_MEMOS_REQUEST = 'REMOVE_MEMOS_REQUEST';
 export const REMOVE_MEMOS_SUCCESS = 'REMOVE_MEMOS_SUCCESS';
 export const REMOVE_MEMOS_FAILURE = 'REMOVE_MEMOS_FAILURE';
 
+// 메모검색 액션
+export const SEARCH_MEMO_REQUEST = 'SEARCH_MEMO_REQUEST';
+export const SEARCH_MEMO_SUCCESS = 'SEARCH_MEMO_SUCCESS';
+export const SEARCH_MEMO_FAILURE = 'SEARCH_MEMO_FAILURE';
+
 // 불러오기한 라벨데이터에 포함된 메모목록을 가지고 메모목록 뷰를 업데이트하는 액션
 export const UPDATE_MEMO_LIST_BY_LABEL = 'UPDATE_MEMO_LIST_BY_LABEL';
 
@@ -94,6 +99,13 @@ export const removeMemosAction = (memoIds) => {
   return {
     type: REMOVE_MEMOS_REQUEST,
     data: memoIds
+  }
+};
+
+export const searchMemoAction = (word) => {
+  return {
+    type: SEARCH_MEMO_REQUEST,
+    data: word
   }
 };
 
@@ -250,6 +262,23 @@ const reducer = (state = intialState, action) => {
       return {
         ...state,
         memoErrorMessage: '일괄 메모삭제에 실패하였습니다'
+      };
+    }
+    case SEARCH_MEMO_REQUEST: {
+      return {
+        ...state
+      };
+    }
+    case SEARCH_MEMO_SUCCESS: {
+      return {
+        ...state,
+        memoList: action.data
+      };
+    }
+    case SEARCH_MEMO_FAILURE: {
+      return {
+        ...state,
+        memoErrorMessage: '메모검색에 실패하였습니다'
       };
     }
     case UPDATE_MEMO_LIST_BY_LABEL: {

@@ -24,7 +24,7 @@ const Overlay = styled.div`
   }
 `;
 
-const LabelItem = ({ localSelectedLabel, onClickLabel }) => {
+const LabelItem = ({ localSelectedLabel }) => {
   const { selectedLabel } = useSelector(state => state.label);
   const { memoCount } = useSelector(state => state.memo);
 
@@ -35,7 +35,6 @@ const LabelItem = ({ localSelectedLabel, onClickLabel }) => {
       className="label-item"
       style={selectedLabel._id ===  localSelectedLabel._id ?
         { color: '1890ff', backgroundColor: '#e6f7ff' } : null}
-      onClick={() => onClickLabel()}
     >
       {localSelectedLabel.title} ({localSelectedLabel._id === 'all' ? memoCount : localSelectedLabel.memos.length })
     </Overlay>

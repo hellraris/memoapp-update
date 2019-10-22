@@ -1,11 +1,5 @@
-const intialLabelList = [{
-  _id: 'all',
-  title: '전체메모',
-  memos: []
-}]
-
 export const intialState = {
-  labelList: intialLabelList,
+  labelList: [],
   selectedLabel: {},
   labelErrorMessage:'',
   createdLabelFlg: false,
@@ -152,7 +146,7 @@ const reducer = (state = intialState, action) => {
     case GET_LABEL_LIST_SUCCESS: {
       return {
         ...state,
-        labelList: [...intialLabelList, ...action.data]
+        labelList: action.data
       };
     }
     case GET_LABEL_LIST_FAILURE: {

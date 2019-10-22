@@ -56,13 +56,22 @@ const Home = () => {
       <AppLayout>
           <Overlay>
             <div className="label-list-view">
-              <Route path="/" component={LabelListView} />
+              <Route 
+                path="/" 
+                component={LabelListView} 
+              />
             </div>
             <div className="memo-list-view"> 
-            < Route path="/:label" component={MemoListView} />
+              <Route 
+                path="/:label"
+                component={MemoListView} 
+              />
             </div>
             <div className="memo-detail-view">
-              <Route exact path="/:label/:memo" component={MemoDetailView} />
+              <Route 
+                path={["/all/m/:memo","/s/:word/m/:memo","/l/:label/m/:memo"]} 
+                component={MemoDetailView} 
+              />
             </div>
           </Overlay>
       </AppLayout>

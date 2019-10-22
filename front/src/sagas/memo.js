@@ -23,6 +23,9 @@ import {
   REMOVE_MEMOS_REQUEST,
   REMOVE_MEMOS_SUCCESS,
   REMOVE_MEMOS_FAILURE,
+  SEARCH_MEMO_REQUEST,
+  SEARCH_MEMO_SUCCESS,
+  SEARCH_MEMO_FAILURE,
   RESET_SELECTED_MEMO
 } from '../reducers/memo'
 
@@ -218,6 +221,29 @@ function* watchRemoveMemos() {
   yield takeLatest(REMOVE_MEMOS_REQUEST, removeMemos);
 };
 
+function searchMemoApi(word) {
+  return axios.get(`/memos/search/${word}`);
+};
+
+function* searchMemo(action) {
+  try {
+    const result = yield call(searchMemoApi, action.data);
+    yield put({
+      type: SEARCH_MEMO_SUCCESS,
+      data: result.data
+    });
+  } catch (error) {
+    yield put({
+      type: SEARCH_MEMO_FAILURE,
+      error: error
+    });
+  }
+};
+
+function* watchSearchMemo() {
+  yield takeLatest(SEARCH_MEMO_REQUEST, searchMemo);
+};
+
 export default function* memoSaga() {
   yield all([
     fork(watchGetMemoList),
@@ -226,6 +252,7 @@ export default function* memoSaga() {
     fork(watchRemoveMemo),
     fork(watchRemoveMemos),
     fork(watchUpdateMemo),
-    fork(watchGetMemoCount)
+    fork(watchGetMemoCount),
+    fork(watchSearchMemo)
   ]);
 };

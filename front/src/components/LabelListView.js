@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 import LabelInputModal from './modals/LabelInputModal';
 import { getLabelListAction, resetDeletedLabelFlg, resetCreatedLabelFlg } from '../reducers/label';
-import { resetSelectedMemo, resetCreatedMemoFlg, getMemoCountAction } from '../reducers/memo';
+import { resetCreatedMemoFlg, getMemoCountAction } from '../reducers/memo';
 import LabelItem from './LabelItem';
 
 const Overlay = styled.div`
@@ -62,7 +62,7 @@ const LabelListView = ({ history, location }) => {
   // 라벨생성시 URL변경
   useEffect(() => {
     if (createdLabelFlg) {
-      history.push(`/${selectedLabel._id}`);
+      history.push(`/l/${selectedLabel._id}`);
     }
     dispatch(resetCreatedLabelFlg);
   }, [createdLabelFlg]);
@@ -79,14 +79,10 @@ const LabelListView = ({ history, location }) => {
   // 메모생성시 해당 메모상세뷰URL로 이동
   useEffect(() => {
     if (createdMemoFlg) {
-      history.push(`/all/${selectedMemo._id}`);
+      history.push(`/all/m/${selectedMemo._id}`);
       dispatch(resetCreatedMemoFlg);
     }
   }, [createdMemoFlg]);
-
-  const onClickLabel = useCallback(() => {
-    dispatch(resetSelectedMemo);
-  }, [selectedLabel]);
 
   const handleModal = useCallback(() => {
     setModal(!isOpenModal);
@@ -98,10 +94,16 @@ const LabelListView = ({ history, location }) => {
         { isOpenModal ? 
             <LabelInputModal label={null} close={handleModal} /> 
           : null }
+        <NavLink to={'/all'}>
+          <LabelItem localSelectedLabel={
+            {_id: 'all', title: '전체메모', memos: []}
+          } 
+          />
+        </NavLink>
         {labelList.map((v) => {
           return (
-            <NavLink key={v._id} to={`/${v._id}`}>
-              <LabelItem localSelectedLabel={v} onClickLabel={onClickLabel} />
+            <NavLink key={v._id} to={`/l/${v._id}`}>
+              <LabelItem localSelectedLabel={v} />
             </NavLink>
           )})
         }

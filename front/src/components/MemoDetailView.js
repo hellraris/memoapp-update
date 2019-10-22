@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Moment from 'moment';
 
-import { getMemoListAction, removeMemoAction,
+import { getMemoListAction, removeMemoAction, searchMemoAction,
    getMemoAction, resetUpdatedMemoFlg } from '../reducers/memo';
 import { getLabelAction } from '../reducers/label';
 
@@ -57,7 +57,7 @@ const Body = styled.div`
   padding: 20px;
 `;
 
-const MemoDetailView = ({match}) => {
+const MemoDetailView = ({match, location}) => {
   const dispatch = useDispatch();
   const { selectedMemo, updatedMemoFlg } = useSelector(state => state.memo);
   const [isOpenModal, setModal] = useState(false);
@@ -66,10 +66,16 @@ const MemoDetailView = ({match}) => {
   // 메모 수정시 메모리스트 갱신
   useEffect(() => {
     if (updatedMemoFlg) {
-      if (match.params.label === 'all') {
+      const updateTarget = location.pathname.substring(1,2);
+      // 전체메모리스트를 통해서 수정
+      if (updateTarget === 'a') {
         dispatch(getMemoListAction);
-      } else {
+      // 라벨메모리스트를 통해서 수정
+      } else if (updateTarget === 'l'){
         dispatch(getLabelAction(match.params.label));
+      // 검색메모리스트를 통해서 수정
+      } else if (updateTarget === 's') {
+        dispatch(searchMemoAction(match.params.word));
       }
       dispatch(resetUpdatedMemoFlg);
     }

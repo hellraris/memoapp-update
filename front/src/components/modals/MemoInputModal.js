@@ -15,14 +15,15 @@ const Overlay = styled.form`
     background-color: rgba(0,0,0,0.16);
   }
   .modal {
+    display: flex;
+    flex-direction: column;
     position: fixed;
+    height: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 700px;
     width: 90%;
-    max-height: 800px;
-    height: 90%;
     padding: 20px;
     border-radius: 5px;
     background-color: white;
@@ -32,9 +33,32 @@ const Overlay = styled.form`
         font-weight: bold;
     }
     .body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       border-top: 1px solid #bebebe;
       margin-top: 10px;
       padding: 5px;
+      .memo-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        fieldset {
+          height: 100%;
+          textarea {
+            height: 100%;
+            outline: 0;
+            border: 0;
+            width: 100%;
+            resize: none;
+            overflow-y: auto;
+            font-size: 16px;
+            &::placeholder {
+              color: #bebebe;
+            }
+          }
+        }
+      }
       fieldset {
         border: 1px solid #bebebe;
         border-radius: 5px;
@@ -47,18 +71,6 @@ const Overlay = styled.form`
           padding: 0;
           font-size: 16px;
           width: 100%;       
-          &::placeholder {
-            color: #bebebe;
-          }
-        }
-        textarea {
-          outline: 0;
-          border: 0;
-          width: 100%;
-          height: calc(100% - 190px);
-          resize: none;
-          overflow-y: auto;
-          font-size: 16px;
           &::placeholder {
             color: #bebebe;
           }

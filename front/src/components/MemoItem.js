@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Moment from 'moment';
 import { NavLink } from 'react-router-dom';
@@ -43,7 +43,7 @@ const Overlay = styled.div`
   }
 `;
 
-const MemoItem = ({ match, localSelectedMemo, onChangeChekedItems, isLabelMemoList, checkedItems }) => {
+const MemoItem = ({ toUrl, localSelectedMemo, onChangeChekedItems, checkedItems }) => {
   const { selectedMemo } = useSelector(state => state.memo);
 
   return (
@@ -61,7 +61,7 @@ const MemoItem = ({ match, localSelectedMemo, onChangeChekedItems, isLabelMemoLi
       </div>
       <NavLink 
         className={"memo-content"}  
-        to={ isLabelMemoList ? `/${match.params.label}/${localSelectedMemo._id}` : `/all/${localSelectedMemo._id}`}
+        to={`/${toUrl}/m/${localSelectedMemo._id}`}
       >
         <div className={"memo-content-header"}>
           <div className={"memo-title"}>{localSelectedMemo.title}</div>
