@@ -31,7 +31,9 @@ router.post('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   Label
     .findById(req.params.id)
-    .populate('memos')
+    .populate(
+      {path: 'memos',
+       options: { sort: { [req.query.target] : req.query.type } } })
     .exec(function (err, label) {
       if (err) return next(err);
       res.json(label);

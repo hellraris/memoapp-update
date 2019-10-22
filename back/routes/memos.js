@@ -8,6 +8,7 @@ var Label = require('../models/Label.js');
 router.get('/', function(req, res, next) {
   Memo
     .find()
+    .sort({ [req.query.target] : req.query.type })
     .exec(function (err, memos) {
       if (err) return next(err);
       res.json(memos);
@@ -40,7 +41,7 @@ router.get('/search/:word', function(req, res, next) {
       {'title': new RegExp(req.params.word, "i")},
       {'content': new RegExp(req.params.word, "i")}
     ]})
-    .sort({ 'updatedAt' : -1 })
+    .sort({ [req.query.target] : req.query.type })
     .exec(function (err, payload) {
       if (err) return next(err);
       res.json(payload);
