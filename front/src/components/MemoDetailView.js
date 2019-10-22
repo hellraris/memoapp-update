@@ -7,6 +7,7 @@ import { getMemoListAction, removeMemoAction, searchMemoAction,
 import { getLabelAction } from '../reducers/label';
 import MemoInputModal from './modals/MemoInputModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
+import { makeSortData } from './functions/commonMemoListFunc';
 import { Overlay, Header, Body } from '../styles/memoDetailViewStyle';
 
 
@@ -22,13 +23,17 @@ const MemoDetailView = ({match, location}) => {
       const updateTarget = location.pathname.substring(1,2);
       // 전체메모리스트를 통해서 수정
       if (updateTarget === 'a') {
-        dispatch(getMemoListAction);
+        dispatch(getMemoListAction(makeSortData("updateDateDesc")));
       // 라벨메모리스트를 통해서 수정
       } else if (updateTarget === 'l'){
-        dispatch(getLabelAction(match.params.label));
+        dispatch(getLabelAction(
+          {labelId: match.params.label, sortData: makeSortData("updateDateDesc")}
+        ));
       // 검색메모리스트를 통해서 수정
       } else if (updateTarget === 's') {
-        dispatch(searchMemoAction(match.params.word));
+        dispatch(searchMemoAction(
+          {word: match.params.word, sortData: makeSortData("updateDateDesc")}
+        ));
       }
       dispatch(resetUpdatedMemoFlg);
     }

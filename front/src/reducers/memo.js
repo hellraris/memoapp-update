@@ -59,8 +59,11 @@ export const RESET_SELECTED_MEMO = 'RESET_SELECTED_MEMO';
 export const RESET_MEMO_LIST = 'RESET_MEMO_LIST';
 export const RESET_MEMO_ERROR_MESSAGE = 'RESET_MEMO_ERROR_MESSAGE';
 
-export const getMemoListAction = {
-  type: GET_MEMO_LIST_REQUEST
+export const getMemoListAction = (sortData) => {
+  return {
+    type: GET_MEMO_LIST_REQUEST,
+    data: sortData
+  }
 };
 
 export const getMemoCountAction = {
@@ -102,10 +105,10 @@ export const removeMemosAction = (memoIds) => {
   }
 };
 
-export const searchMemoAction = (word) => {
+export const searchMemoAction = (searchData) => {
   return {
     type: SEARCH_MEMO_REQUEST,
-    data: word
+    data: searchData
   }
 };
 

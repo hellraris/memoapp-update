@@ -7,6 +7,7 @@ import { getLabelListAction, resetUpdatedLabelFlg, resetSelectedLabel } from '..
 import LabelSettingModal from './modals/LabelSettingModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
 import MemoItem from './MemoItem';
+import { makeSortData } from './functions/commonMemoListFunc';
 import { Overlay, MemoMenu } from '../styles/commonMemoListStyle';
 
 
@@ -15,6 +16,7 @@ const SearchMemoList = ({ match, history }) => {
   const [isOpenLabelSettingModal, setLabelSettingModal] = useState(false);
   const [isOpenConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({});
+  const [sortType, setSortType] = useState('');
   const dispatch = useDispatch();
   const { labelList, updatedLabelFlg } = useSelector(state => state.label);
   const { memoList, deletedMemoFlg } = useSelector(state => state.memo);
@@ -24,7 +26,9 @@ const SearchMemoList = ({ match, history }) => {
 
    // 메모리스트뷰 초기화 
   useEffect(() => {
-    dispatch(searchMemoAction(targetWord));
+    dispatch(searchMemoAction(
+      {word: targetWord, sortData: makeSortData("updateDateDesc")}
+    ));
     dispatch(resetSelectedLabel);
     dispatch(resetSelectedMemo);
     setCheckedItems([]);
@@ -33,7 +37,9 @@ const SearchMemoList = ({ match, history }) => {
   // 라벨업데이트시 라벨리스트 갱신
   useEffect(() => {
     if (updatedLabelFlg) {
-      dispatch(searchMemoAction(targetWord));
+      dispatch(searchMemoAction(
+        {word: targetWord, sortData: makeSortData("updateDateDesc")}
+      ));
       dispatch(getLabelListAction);
       dispatch(resetUpdatedLabelFlg);
       setCheckedItems([]);
@@ -71,6 +77,13 @@ const SearchMemoList = ({ match, history }) => {
     setOpenConfirmDialog(false);
   });
 
+  const onChangeSortType = (e) => {
+    setSortType(e.target.value);
+    dispatch(searchMemoAction(
+      {word: targetWord, sortData: makeSortData(e.target.value)}
+    ));
+  };
+
   // 오픈할 다이어로그를 판별
   const handleDialog = ((target) => {
     let newMsg = "";
@@ -88,6 +101,15 @@ const SearchMemoList = ({ match, history }) => {
         <MemoMenu>
           <div className={"label-title"}>
             "{targetWord}" 검색결과
+          </div>
+          <div className={"label-sort"}>
+            <select onChange={onChangeSortType} value={sortType}>>
+              <option value="updateDateDesc">갱신일▽</option>
+              <option value="updateDateAsc">갱신일△</option>
+              <option value="writeDateDesc">작성일▽</option>
+              <option value="writeDateAsc">작성일△</option>
+              <option value="TitleAsc">타이틀</option>
+            </select>
           </div>
           <div className={"label-btns"}>
             <button 

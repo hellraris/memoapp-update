@@ -20,8 +20,13 @@ export const MemoMenu = styled.div`
     text-overflow:ellipsis;
     white-space:nowrap;
   }
+  .label-sort {
+    margin: 10px 0;
+    select {
+      height: 25px;
+    }
+  }
   .label-btns {
-    margin-top: 10px;
     width: 100%;
     display: flex;
     justify-content: center;

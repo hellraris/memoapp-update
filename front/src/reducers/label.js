@@ -75,10 +75,10 @@ export const updateLabelAction = (label) => {
   }
 };
 
-export const getLabelAction = (id) => {
+export const getLabelAction = (labelData) => {
   return {
     type: GET_LABEL_REQUEST,
-    data: id
+    data: labelData
   }
 };
 

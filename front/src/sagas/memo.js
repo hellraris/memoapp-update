@@ -36,13 +36,15 @@ import {
 } from '../reducers/label'
 
 
-function getMemoListApi() {
-  return axios.get('/memos');
+function getMemoListApi(sortData) {
+  return axios.get('/memos'
+    + '?target=' + sortData.target 
+    + '&type=' + sortData.type);
 };
 
-function* getMemoList() {
+function* getMemoList(action) {
   try {
-    const result = yield call(getMemoListApi);
+    const result = yield call(getMemoListApi, action.data);
     yield put({
       type: GET_MEMO_LIST_SUCCESS,
       data: result.data
@@ -221,8 +223,10 @@ function* watchRemoveMemos() {
   yield takeLatest(REMOVE_MEMOS_REQUEST, removeMemos);
 };
 
-function searchMemoApi(word) {
-  return axios.get(`/memos/search/${word}`);
+function searchMemoApi(searchData) {
+  return axios.get(`/memos/search/${searchData.word}`
+    + '?target=' + searchData.sortData.target 
+    + '&type=' + searchData.sortData.type);
 };
 
 function* searchMemo(action) {

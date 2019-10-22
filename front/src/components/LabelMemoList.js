@@ -8,6 +8,7 @@ import LabelSettingModal from './modals/LabelSettingModal';
 import LabelInputModal from './modals/LabelInputModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
 import MemoItem from './MemoItem';
+import { makeSortData } from './functions/commonMemoListFunc';
 import { Overlay, MemoMenu } from '../styles/commonMemoListStyle';
 
 
@@ -17,6 +18,7 @@ const LabelMemoList = ({ match, history }) => {
   const [isOpenLabelInputModal, setLabelInputModal] = useState(false);
   const [isOpenConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({});
+  const [sortType, setSortType] = useState('');
   const dispatch = useDispatch();
   const { labelList, selectedLabel, updatedLabelFlg } = useSelector(state => state.label);
   const { memoList, deletedMemoFlg } = useSelector(state => state.memo);
@@ -26,7 +28,9 @@ const LabelMemoList = ({ match, history }) => {
 
    // 메모리스트뷰 초기화 
   useEffect(() => {
-    dispatch(getLabelAction(targetLabel));
+    dispatch(getLabelAction(
+      {labelId: targetLabel, sortData: makeSortData("updateDateDesc")}
+    ));
     dispatch(resetSelectedMemo);
     setCheckedItems([]);
   }, [match.params.label]);
@@ -35,7 +39,9 @@ const LabelMemoList = ({ match, history }) => {
   useEffect(() => {
     if (updatedLabelFlg) {
       // 라벨를 통해 수정이 이루어진 경우 라벨리스트를 리프레쉬
-      dispatch(getLabelAction(targetLabel));
+      dispatch(getLabelAction(
+        {labelId: targetLabel, sortData: makeSortData("updateDateDesc")}
+      ));
       dispatch(getLabelListAction);
       dispatch(resetUpdatedLabelFlg);
       setCheckedItems([]);
@@ -84,6 +90,13 @@ const LabelMemoList = ({ match, history }) => {
     setOpenConfirmDialog(false);
   });
 
+  const onChangeSortType = (e) => {
+    setSortType(e.target.value);
+    dispatch(getLabelAction(
+      {labelId: targetLabel, sortData: makeSortData(e.target.value)}
+    ));
+  };
+
   // 오픈할 다이어로그를 판별
   const handleDialog = ((target) => {
     if (target === 'labelMemos') {
@@ -103,6 +116,15 @@ const LabelMemoList = ({ match, history }) => {
       { isOpenConfirmDialog && <ConfirmDialog msg={confirmDialog.msg} confirm={confirmDialog.confirm}/> }
         <MemoMenu>
           <div className={"label-title"}>{ selectedLabel.title }</div> 
+          <div className={"label-sort"}>
+            <select onChange={onChangeSortType} value={sortType}>>
+              <option value="updateDateDesc">갱신일▽</option>
+              <option value="updateDateAsc">갱신일△</option>
+              <option value="writeDateDesc">작성일▽</option>
+              <option value="writeDateAsc">작성일△</option>
+              <option value="TitleAsc">타이틀</option>
+            </select>
+          </div>
           <div className={"label-btns"}>
             <button
               onClick={handleInputModal}>라벨명변경

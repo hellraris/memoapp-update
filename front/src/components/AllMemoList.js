@@ -7,7 +7,8 @@ import { getLabelListAction, resetUpdatedLabelFlg } from '../reducers/label';
 import LabelSettingModal from './modals/LabelSettingModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
 import MemoItem from './MemoItem';
-import { Overlay, MemoMenu } from '../style/commonMemoListStyle';
+import { makeSortData } from './functions/commonMemoListFunc';
+import { Overlay, MemoMenu } from '../styles/commonMemoListStyle';
 
 
 const AllMemoList = ({ history }) => {
@@ -18,12 +19,13 @@ const AllMemoList = ({ history }) => {
   const dispatch = useDispatch();
   const { labelList, updatedLabelFlg } = useSelector(state => state.label);
   const { memoList, deletedMemoFlg } = useSelector(state => state.memo);
+  const [sortType, setSortType] = useState('');
 
   const isDisabled = memoList.length === 0 || checkedItems.length === 0 || labelList.length === 0;
 
    // 메모리스트뷰 초기화 
   useEffect(() => {
-    dispatch(getMemoListAction);
+    dispatch(getMemoListAction(makeSortData("updateDateDesc")));
     dispatch(resetSelectedMemo);
     setCheckedItems([]);
   }, []);
@@ -40,7 +42,7 @@ const AllMemoList = ({ history }) => {
   // 메모삭제시 전체메모 리스트 갱신
   useEffect(() => {
     if (deletedMemoFlg) {
-      dispatch(getMemoListAction);
+      dispatch(getMemoListAction(makeSortData("updateDateDesc")));
       dispatch(resetDeletedMemoFlg);
       history.push(`/all`);
     }
@@ -68,6 +70,11 @@ const AllMemoList = ({ history }) => {
     setOpenConfirmDialog(false);
   });
 
+  const onChangeSortType = (e) => {
+    setSortType(e.target.value);
+    dispatch(getMemoListAction(makeSortData(e.target.value)));
+  };
+
   // 오픈할 다이어로그를 판별
   const handleDialog = ((target) => {
     let newMsg = "";
@@ -85,6 +92,15 @@ const AllMemoList = ({ history }) => {
         <MemoMenu>
           <div className={"label-title"}>
             전체메모
+          </div>
+          <div className={"label-sort"}>
+            <select onChange={onChangeSortType} value={sortType}>>
+              <option value="updateDateDesc">갱신일▽</option>
+              <option value="updateDateAsc">갱신일△</option>
+              <option value="writeDateDesc">작성일▽</option>
+              <option value="writeDateAsc">작성일△</option>
+              <option value="TitleAsc">타이틀</option>
+            </select>
           </div>
           <div className={"label-btns"}>
             <button 

@@ -56,8 +56,10 @@ function* watchGetLabelList() {
   yield takeLatest(GET_LABEL_LIST_REQUEST, getLabelList);
 };
 
-function getLabelApi(id) {
-  return axios.get(`/labels/${id}`);
+function getLabelApi(labelData) {
+  return axios.get(`/labels/${labelData.labelId}`
+    + '?target=' + labelData.sortData.target 
+    + '&type=' + labelData.sortData.type);
 };
 
 function* getLabel(action) {
