@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 import LabelInputModal from './modals/LabelInputModal';
@@ -8,41 +7,7 @@ import { getLabelListAction, resetDeletedLabelFlg, resetCreatedLabelFlg } from '
 import { resetCreatedMemoFlg, getMemoCountAction } from '../reducers/memo';
 import LabelItem from './LabelItem';
 
-const Overlay = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  .label-list {
-    overflow-y: scroll;
-    height: 100%;
-  }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-`;
-
-const LabelItemStyle = styled.div`
-  border-bottom: 1px solid #DFDFDF;
-  padding: 16px;
-  text-align: center;
-  word-break: break-word;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  overflow:hidden;
-  cursor: pointer;
-  &:hover{
-    color: #1890ff;
-  }
-  &:active{
-    background-color: #e6f7ff;
-  }
-  &.add-btn {
-    border-top: 1px solid #DFDFDF;
-    border-bottom: 0px;
-    margin-top: auto;
-  }
-`;
+import { Overlay, LabelItemStyle } from '../styles/labelListViewStyle'
 
 const LabelListView = ({ history, location }) => {
   const [isOpenModal, setModal] = useState(false);
@@ -95,9 +60,8 @@ const LabelListView = ({ history, location }) => {
             <LabelInputModal label={null} close={handleModal} /> 
           : null }
         <NavLink to={'/all'}>
-          <LabelItem localSelectedLabel={
-            {_id: 'all', title: '전체메모', memos: []}
-          } 
+          <LabelItem 
+            localSelectedLabel={{_id: 'all', title: '전체메모', memos: []}} 
           />
         </NavLink>
         {labelList.map((v) => {

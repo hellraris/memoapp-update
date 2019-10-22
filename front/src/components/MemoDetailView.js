@@ -1,61 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import Moment from 'moment';
 
 import { getMemoListAction, removeMemoAction, searchMemoAction,
    getMemoAction, resetUpdatedMemoFlg } from '../reducers/memo';
 import { getLabelAction } from '../reducers/label';
-
 import MemoInputModal from './modals/MemoInputModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
+import { Overlay, Header, Body } from '../styles/memoDetailViewStyle';
 
-const Overlay = styled.div`
-  display: flex;
-  flex-direction: column;
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    .memo-title {
-      margin-top: 5px;
-      padding: 10px;
-      font-size: 20px;
-      word-break: break-word;
-      width: 75%;
-    }
-    .memo-btns {
-      display: flex;
-      margin-bottom: 5px;
-      button {
-        margin: 5px;
-        padding: 7px;
-        border-radius: 3px;
-        background-color: white;
-        font-size: 12px;
-        border: 1px solid #bebebe;
-        cursor: pointer;
-        &:hover {
-          color: #1890ff;
-        }
-        &:active {
-          background-color: #e6f7ff;
-        }
-      }
-    }
-`;
-
-const Body = styled.div`
-  word-break: break-word;
-  white-space: pre-line;
-  padding: 20px;
-`;
 
 const MemoDetailView = ({match, location}) => {
   const dispatch = useDispatch();
