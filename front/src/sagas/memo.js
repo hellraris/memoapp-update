@@ -38,11 +38,18 @@ import {
 
 function getMemoListApi(sortData) {
   return axios.get('/memos'
-    + '?target=' + sortData.target 
+    + '?target=' + sortData.target
     + '&type=' + sortData.type);
 };
 
 function* getMemoList(action) {
+  // 정렬조건 미지정시 디폴트값 설정
+  if (typeof action.data === 'undefined' || action.data === null ) {
+    action.data = {
+      target: 'createdAt',
+      type: '-1'
+    }
+  }
   try {
     const result = yield call(getMemoListApi, action.data);
     yield put({
