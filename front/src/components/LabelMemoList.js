@@ -34,6 +34,7 @@ const LabelMemoList = ({ match, history }) => {
       {labelId: targetLabel, sortData: makeSortData(UPDATED_DATE_DESC)}
     ));
     dispatch(resetSelectedMemo);
+    setSortType(UPDATED_DATE_DESC);
     setCheckedItems([]);
   }, [match.params.label]);
 
@@ -51,6 +52,7 @@ const LabelMemoList = ({ match, history }) => {
       ));
       dispatch(getLabelListAction);
       dispatch(resetUpdatedLabelFlg);
+      setAllCheckedItemFlg(false);
       setCheckedItems([]);
     }
   }, [updatedLabelFlg]);

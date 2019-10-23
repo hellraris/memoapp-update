@@ -49,6 +49,7 @@ const SearchMemoList = ({ match, history }) => {
       ));
       dispatch(getLabelListAction);
       dispatch(resetUpdatedLabelFlg);
+      setAllCheckedItemFlg(false);
       setCheckedItems([]);
     }
   }, [updatedLabelFlg]);

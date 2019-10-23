@@ -30,10 +30,10 @@ export const MemoMenu = styled.div`
     width: 100%;
     display: flex;
     .memo-all-selection{
-      margin: auto 0 auto 10;
+      margin: auto 0 auto 5;
     }
     .label-btns{
-      width: 100%;
+      width: 97%;
       display: flex;
       justify-content: center;
       button {

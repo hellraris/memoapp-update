@@ -9,10 +9,10 @@ export const Overlay = styled.div`
     color: #1890ff;
   }
   .memo-selection {
-    margin: auto 20 auto 20;
+    margin: auto 15 auto 15;
   }
   .memo-content {
-    width: 100%;
+    width: 85%;
     .memo-content-header {
       display: flex;
       justify-content: space-between;
