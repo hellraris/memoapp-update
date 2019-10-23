@@ -14,8 +14,11 @@ import AppLayout from '../components/AppLayout';
 
 const Overlay = styled.div`
   display: flex;
-  height: calc(100% - 70px);
+  height: calc(100% - 80px);
+  padding: 10;
   margin-top: 10;
+  min-width: 1200px;
+  min-height: 300px;
   .label-list-view {
     flex: 1 1 20%;
     margin-right: 5px;
