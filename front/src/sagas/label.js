@@ -17,6 +17,9 @@ import {
   ADD_LABEL_MEMOS_REQUEST,
   ADD_LABEL_MEMOS_SUCCESS,
   ADD_LABEL_MEMOS_FAILURE,
+  ADD_MULTIPLE_LABEL_MEMO_REQUEST,
+  ADD_MULTIPLE_LABEL_MEMO_SUCCESS,
+  ADD_MULTIPLE_LABEL_MEMO_FAILURE,
   REMOVE_LABEL_REQUEST,
   REMOVE_LABEL_SUCCESS,
   REMOVE_LABEL_FAILURE,
@@ -165,6 +168,29 @@ function* watchAddLabelMemos() {
   yield takeLatest(ADD_LABEL_MEMOS_REQUEST, addLabelMemos);
 };
 
+function addMultiLabelMemoApi(addMemosData) {
+  return axios.put(`/labels/memo/${addMemosData.memoId}`,
+   {labelIds: addMemosData.labelIds});
+};
+
+function* addMultiLabelMemo(action) {
+  try {
+    yield call(addMultiLabelMemoApi, action.data);
+    yield put({
+      type: ADD_MULTIPLE_LABEL_MEMO_SUCCESS
+    });
+  } catch (error) {
+    yield put({
+      type: ADD_MULTIPLE_LABEL_MEMO_FAILURE,
+      error: error
+    });
+  }
+};
+
+function* watchAddMultiLabelMemo() {
+  yield takeLatest(ADD_MULTIPLE_LABEL_MEMO_REQUEST, addMultiLabelMemo);
+};
+
 function removeLabelApi(id) {
   return axios.delete(`/labels/${id}`);
 };
@@ -247,6 +273,7 @@ export default function* labelSaga() {
     fork(watchAddLabelMemos),
     fork(watchRemoveLabelMemos),
     fork(watchRemoveAllLabelMemos),
-    fork(watchRemoveLabel)
+    fork(watchRemoveLabel),
+    fork(watchAddMultiLabelMemo)
   ]);
 };

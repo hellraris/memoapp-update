@@ -32,7 +32,8 @@ import {
 import { 
   REMOVE_ALL_LABEL_MEMOS_REQUEST,
   RESET_SELECTED_LABEL,
-  SELECT_MEMO_LIST_LABEL
+  SELECT_MEMO_LIST_LABEL,
+  ADD_MULTIPLE_LABEL_MEMO_REQUEST
 } from '../reducers/label'
 
 
@@ -134,6 +135,15 @@ function* createMemo(action) {
     yield put({
       type: RESET_SELECTED_LABEL
     });
+    // 일괄 지정라벨이 존재 시 액션을 요청
+    const labelIds = action.data.AddTargetLabels;
+    if (typeof labelIds !== 'undefined' && labelIds !== null) {
+      yield put({
+        type: ADD_MULTIPLE_LABEL_MEMO_REQUEST,
+        data: { memoId: result.data._id, 
+          labelIds: labelIds}
+      });
+    }
   } catch (error) {
     yield put({
       type: CREATE_MEMO_FAILURE,

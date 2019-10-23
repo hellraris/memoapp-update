@@ -1,34 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Select } from 'antd';
 
 import { createMemoAction, updateMemoAction } from '../../reducers/memo';
 import { Overlay } from '../../styles/modals/memoInputModalStyle';
 
+const { Option } = Select;
 
-const MemoInputModal = ({ memo, close }) => {
+const MemoInputModal = ({ memo, labelList, close }) => {
   const dispatch = useDispatch();
   const [isEditMode, setEditMode] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-
-  const onChangeTitle = (e) => {
-    setTitle(e.target.value);
-  }
-
-  const onChangeContent = (e) => {
-    setContent(e.target.value);
-  }
-
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-
-    if (isEditMode) {
-      dispatch(updateMemoAction({id: memo._id, title: title, content: content}));
-    } else {
-      dispatch(createMemoAction({title, content}));
-    }
-    return close();
-  }, [title, content]);
+  const [AddTargetLabels, setAddTargetLabels] = useState(null);
 
   useEffect(() => {
     if (memo !== null) {
@@ -39,6 +23,29 @@ const MemoInputModal = ({ memo, close }) => {
       setEditMode(false);
     }
   }, [memo]);
+
+  const onChangeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const onChangeContent = (e) => {
+    setContent(e.target.value);
+  };
+
+  const onChangeAddTargetLabels = (value) => {
+    setAddTargetLabels(value);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (isEditMode) {
+      dispatch(updateMemoAction({id: memo._id, title, content}));
+    } else {
+      dispatch(createMemoAction({title, content, AddTargetLabels}));
+    }
+    return close();
+  };
 
   return (
     <Overlay onSubmit={onSubmit}>
@@ -52,6 +59,21 @@ const MemoInputModal = ({ memo, close }) => {
                 required value={title} onChange={onChangeTitle} />
             </fieldset>
           </div>
+          {typeof labelList !== 'undefined' &&
+            <div>
+              <Select
+                mode="multiple"
+                size="large"
+                placeholder="라벨을 지정해주세요."
+                onChange={onChangeAddTargetLabels}
+                style={{ width: '100%' }}
+              >
+                {labelList.map((v)=>{
+                  return <Option key={v._id}>{v.title}</Option>
+                })}
+              </Select>
+            </div>
+          }
           <div className="memo-content">
             <fieldset>
                 <textarea placeholder="내용을 입력해주세요" value={content} onChange={onChangeContent}/>

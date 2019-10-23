@@ -8,7 +8,8 @@ import LabelSettingModal from './modals/LabelSettingModal';
 import LabelInputModal from './modals/LabelInputModal';
 import ConfirmDialog from './dialogs/ConfirmDialog';
 import MemoItem from './MemoItem';
-import { makeSortData } from './functions/commonMemoListFunc';
+import { makeSortData, CREATED_DATE_DESC, CREATED_DATE_ASC,
+  UPDATED_DATE_DESC, UPDATED_DATE_ASC, TITLE_ASC } from './functions/commonMemoListFunc';
 import { Overlay, MemoMenu } from '../styles/commonMemoListStyle';
 
 
@@ -21,7 +22,8 @@ const LabelMemoList = ({ match, history }) => {
   const [sortType, setSortType] = useState('');
   const dispatch = useDispatch();
   const { labelList, selectedLabel, updatedLabelFlg } = useSelector(state => state.label);
-  const { memoList, deletedMemoFlg } = useSelector(state => state.memo);
+  const { memoList, deletedMemoFlg, updatedMemoFlg, createdMemoFlg } = useSelector(state => state.memo);
+  const [allCheckedItemFlg, setAllCheckedItemFlg] = useState(false);
 
   const isDisabled = memoList.length === 0 || checkedItems.length === 0 || labelList.length === 0;
   const targetLabel = match.params.label;
@@ -29,18 +31,23 @@ const LabelMemoList = ({ match, history }) => {
    // 메모리스트뷰 초기화 
   useEffect(() => {
     dispatch(getLabelAction(
-      {labelId: targetLabel, sortData: makeSortData("updateDateDesc")}
+      {labelId: targetLabel, sortData: makeSortData(UPDATED_DATE_DESC)}
     ));
     dispatch(resetSelectedMemo);
     setCheckedItems([]);
   }, [match.params.label]);
+
+  // 플래그 업데이트시 정렬 디폴트설정
+  useEffect(() => {
+    setSortType(UPDATED_DATE_DESC);
+  }, [ updatedMemoFlg, deletedMemoFlg, createdMemoFlg]);
 
   // 라벨업데이트시 라벨리스트 갱신
   useEffect(() => {
     if (updatedLabelFlg) {
       // 라벨를 통해 수정이 이루어진 경우 라벨리스트를 리프레쉬
       dispatch(getLabelAction(
-        {labelId: targetLabel, sortData: makeSortData("updateDateDesc")}
+        {labelId: targetLabel, sortData: makeSortData(sortType)}
       ));
       dispatch(getLabelListAction);
       dispatch(resetUpdatedLabelFlg);
@@ -56,6 +63,19 @@ const LabelMemoList = ({ match, history }) => {
       history.push(`/l/${targetLabel}`);
     }
   }, [deletedMemoFlg]);
+
+  const checkAllItem = () => {
+    let newCheckedItems;
+    if (allCheckedItemFlg) {
+      newCheckedItems = []
+    } else {
+      newCheckedItems = memoList.map((v) => {
+        return v._id;
+      })
+    }
+    setCheckedItems(newCheckedItems);
+    setAllCheckedItemFlg(!allCheckedItemFlg);
+  }
 
   const onChangeChekedItems = useCallback((e, _id) => {
     const newCheckedItems = [ ...checkedItems ];
@@ -116,30 +136,35 @@ const LabelMemoList = ({ match, history }) => {
       { isOpenConfirmDialog && <ConfirmDialog msg={confirmDialog.msg} confirm={confirmDialog.confirm}/> }
         <MemoMenu>
           <div className={"label-title"}>{ selectedLabel.title }</div> 
-          <div className={"label-sort"}>
+          <div className={"memo-sort"}>
             <select onChange={onChangeSortType} value={sortType}>>
-              <option value="updateDateDesc">갱신일▽</option>
-              <option value="updateDateAsc">갱신일△</option>
-              <option value="writeDateDesc">작성일▽</option>
-              <option value="writeDateAsc">작성일△</option>
-              <option value="TitleAsc">타이틀</option>
+              <option value={UPDATED_DATE_DESC}>갱신일▽</option>
+              <option value={UPDATED_DATE_ASC}>갱신일△</option>
+              <option value={CREATED_DATE_DESC}>작성일▽</option>
+              <option value={CREATED_DATE_ASC}>작성일△</option>
+              <option value={TITLE_ASC}>제목</option>
             </select>
           </div>
-          <div className={"label-btns"}>
-            <button
-              onClick={handleInputModal}>라벨명변경
-            </button>
-            <button
-              onClick={() => handleDialog("label")}>라벨삭제
-            </button>
-            <button
-              disabled={isDisabled}   
-              onClick={handleSettingModal}>라벨지정
-            </button>
-            <button 
-              disabled={isDisabled} 
-              onClick={() => handleDialog("labelMemos")}>라벨해제
-            </button>
+          <div className={"memo-list-menu"}>
+            <div className={"memo-all-selection"}>
+              <input type="checkbox" checked={allCheckedItemFlg} onChange={checkAllItem}/>
+            </div>
+            <div className={"label-btns"}>
+              <button
+                onClick={handleInputModal}>라벨명변경
+              </button>
+              <button
+                onClick={() => handleDialog("label")}>라벨삭제
+              </button>
+              <button
+                disabled={isDisabled}   
+                onClick={handleSettingModal}>라벨지정
+              </button>
+              <button 
+                disabled={isDisabled} 
+                onClick={() => handleDialog("labelMemos")}>라벨해제
+              </button>
+            </div>
           </div>
         </MemoMenu>
       { memoList.length !== 0 

@@ -32,6 +32,11 @@ export const ADD_LABEL_MEMOS_REQUEST = 'ADD_LABEL_MEMOS_REQUEST';
 export const ADD_LABEL_MEMOS_SUCCESS = 'ADD_LABEL_MEMOS_SUCCESS';
 export const ADD_LABEL_MEMOS_FAILURE = 'ADD_LABEL_MEMOS_FAILURE';
 
+// 라벨 일괄지정 액션
+export const ADD_MULTIPLE_LABEL_MEMO_REQUEST = 'ADD_MULTIPLE_LABEL_MEMO_REQUEST';
+export const ADD_MULTIPLE_LABEL_MEMO_SUCCESS = 'ADD_MULTIPLE_LABEL_MEMO_SUCCESS';
+export const ADD_MULTIPLE_LABEL_MEMO_FAILURE = 'ADD_MULTIPLE_LABEL_MEMO_FAILURE';
+
 // 라벨삭제 액션
 export const REMOVE_LABEL_REQUEST = 'REMOVE_LABEL_REQUEST';
 export const REMOVE_LABEL_SUCCESS = 'REMOVE_LABEL_SUCCESS';
@@ -86,6 +91,13 @@ export const addLabelMemosAction = (addMemosData) => {
   return {
     type: ADD_LABEL_MEMOS_REQUEST,
     data: addMemosData
+  }
+};
+
+export const addMutilpleLabelMemoAction = (addLabelData) => {
+  return {
+    type: ADD_MULTIPLE_LABEL_MEMO_REQUEST,
+    data: addLabelData
   }
 };
 
@@ -217,6 +229,21 @@ const reducer = (state = intialState, action) => {
       return {
         ...state,
         labelErrorMessage: '라벨지정에 실패하였습니다'
+      };
+    }
+    case ADD_MULTIPLE_LABEL_MEMO_REQUEST: {
+      return state;
+    }
+    case ADD_MULTIPLE_LABEL_MEMO_SUCCESS: {
+      return {
+        ...state,
+        updatedLabelFlg: true
+      };
+    }
+    case ADD_MULTIPLE_LABEL_MEMO_FAILURE: {
+      return {
+        ...state,
+        labelErrorMessage: '라벨 일괄지정에 실패하였습니다'
       };
     }
     case REMOVE_LABEL_REQUEST: {

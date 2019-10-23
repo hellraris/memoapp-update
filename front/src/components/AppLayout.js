@@ -12,7 +12,7 @@ const AppLayout = ({ children, history }) => {
   const [isOpenModal, setModal] = useState(false);
   const [searchWord, setSearchWord] = useState('');
   const { memoErrorMessage } = useSelector(state => state.memo);
-  const { labelErrorMessage } = useSelector(state => state.label);
+  const { labelErrorMessage, labelList } = useSelector(state => state.label);
   const dispatch = useDispatch();
 
   const handleModal = useCallback(() => {
@@ -47,10 +47,10 @@ const AppLayout = ({ children, history }) => {
       dispatch(resetLabelErrorMessage);
     }
   },[labelErrorMessage]);
-
+  
   return (
     <div>
-      { isOpenModal ? <MemoInputModal memo={null} close={handleModal}/> : null }
+      { isOpenModal ? <MemoInputModal memo={null} labelList={labelList} close={handleModal}/> : null }
       <Overlay>
         <button onClick={handleModal}>메모작성</button>
         <div className="search">
