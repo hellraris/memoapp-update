@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var Memo = require('../models/Memo.js');
-var Label = require('../models/Label.js');
 
 /* GET /memos listing. */
 router.get('/', function(req, res, next) {
