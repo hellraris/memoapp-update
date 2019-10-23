@@ -51,6 +51,22 @@ router.put('/:id', function(req, res, next) {
     });
 });
 
+/* PUT /labels/memo/:id */
+router.put('/memo/:id', function(req, res, next) {
+  const labelIds = req.body.labelIds || [];
+  Label
+    .update(
+      {_id: { $in: labelIds }},
+      { $push: { memos: req.params.id } },
+      {multi: true}
+      )
+    .exec(function (err, label) {
+      if (err) return next(err);
+      res.json(label);
+    });
+});
+
+
 /* DELETE /labels/:id */
 router.delete('/:id', function(req, res, next) {
   Label
